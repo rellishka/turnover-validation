@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turnover review — Causeway screen mockup</title>
+<style>
+  :root{
+    --bg:#f7f7f5; --surface:#ffffff; --surface2:#f1efe8;
+    --text:#2c2c2a; --muted:#5f5e5a; --border:rgba(0,0,0,0.12);
+    --radius:12px; --radius-sm:8px;
+    --blue:#378ADD; --teal:#1D9E75; --amber:#EF9F27; --red:#cf5c4e;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; padding:32px; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap{ max-width:1000px; margin:0 auto; }
+  h1{ font-size:22px; font-weight:500; margin:0 0 2px; }
+  .sub{ font-size:13px; color:var(--muted); margin:0; }
+  .head{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px; }
+  .layout{ display:grid; grid-template-columns:300px 1fr; gap:16px; align-items:start; }
+  @media (max-width:780px){ .layout{ grid-template-columns:1fr; } }
+  .card{ background:var(--surface); border:0.5px solid var(--border); border-radius:var(--radius); padding:16px 20px; }
+  .card .title{ font-size:14px; font-weight:500; margin-bottom:12px; }
+
+  /* flagged queue */
+  .queue{ display:flex; flex-direction:column; gap:6px; }
+  .qrow{ display:block; width:100%; text-align:left; border:0.5px solid var(--border); background:var(--surface);
+    border-radius:var(--radius-sm); padding:10px 12px; cursor:pointer; font:inherit; color:inherit; }
+  .qrow:hover{ background:var(--surface2); }
+  .qrow.active{ border-color:var(--blue); background:var(--surface2); }
+  .qrow .t{ font-size:13px; font-weight:500; }
+  .qrow .m{ font-size:12px; color:var(--muted); margin-top:2px; }
+  .qrow .d{ font-size:12px; color:var(--amber); margin-top:4px; font-weight:500; }
+
+  /* badges */
+  .badge{ display:inline-block; font-size:11px; font-weight:600; letter-spacing:.02em; padding:2px 8px; border-radius:999px; }
+  .badge.flagged{ background:rgba(239,159,39,0.16); color:#9a6a12; }
+  .badge.open{ background:rgba(207,92,78,0.14); color:#a13e33; }
+
+  /* object header */
+  .objhead{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; }
+  .objhead h2{ font-size:18px; font-weight:500; margin:0; }
+  .objhead .ctx{ font-size:13px; color:var(--muted); margin-top:2px; }
+
+  /* property fields grid */
+  .fields{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px 20px; }
+  .field .k{ font-size:12px; color:var(--muted); }
+  .field .v{ font-size:15px; font-weight:500; margin-top:2px; }
+  .field .v.warn{ color:var(--amber); }
+
+  .divide{ height:0.5px; background:var(--border); margin:16px 0; }
+
+  /* validation issue */
+  .issue{ background:var(--surface2); border-radius:var(--radius-sm); padding:12px 14px; }
+  .issue .rule{ font-size:13px; font-weight:500; margin:6px 0 4px; }
+  .issue .desc{ font-size:13px; color:var(--muted); }
+
+  /* actions */
+  .actions{ margin-top:4px; }
+  .actions .lbl{ font-size:12px; color:var(--muted); margin-bottom:4px; }
+  input, textarea{ width:100%; font:inherit; font-size:13px; color:var(--text); background:var(--surface);
+    border:0.5px solid var(--border); border-radius:var(--radius-sm); padding:8px 10px; }
+  textarea{ resize:vertical; min-height:54px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:520px){ .grid2{ grid-template-columns:1fr; } }
+  .btns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  button.act{ height:36px; padding:0 16px; border-radius:var(--radius-sm); font:inherit; font-size:13px; font-weight:500;
+    cursor:pointer; border:0.5px solid var(--border); }
+  button.primary{ background:var(--blue); color:#fff; border-color:var(--blue); }
+  button.secondary{ background:var(--surface); color:var(--text); }
+  .hint{ font-size:12px; color:var(--muted); margin-top:10px; }
+  .recorded{ display:none; margin-top:14px; background:rgba(29,158,117,0.10); border:0.5px solid rgba(29,158,117,0.35);
+    border-radius:var(--radius-sm); padding:12px 14px; font-size:13px; }
+  .recorded .h{ font-weight:600; color:#157a59; margin-bottom:6px; }
+  .recorded .l{ color:var(--muted); }
+  .recorded .l b{ color:var(--text); font-weight:500; }
+
+  .note{ font-size:12px; color:var(--muted); margin-top:20px; }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#1a1a18; --surface:#242422; --surface2:#2c2c2a; --text:#ebebe8; --muted:#a8a8a2; --border:rgba(255,255,255,0.12); }
+    .badge.flagged{ color:#f0bf73; } .badge.open{ color:#e7948a; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <h1>Turnover review</h1>
+      <p class="sub">Asset Manager &middot; flagged figures awaiting validation</p>
+    </div>
+    <div style="font-size:13px;color:var(--muted);">Signed in as <b style="color:var(--text);font-weight:500;">a.manager@property.example</b></div>
+  </div>
+
+  <div class="layout">
+    <!-- Flagged queue: Causeway renders this from a domain-service action returning the flagged turnovers -->
+    <div class="card">
+      <div class="title">Flagged queue <span class="badge flagged">3</span></div>
+      <div class="queue">
+        <button class="qrow active">
+          <div class="t">Zalando</div>
+          <div class="m">Kastanjelaan, Amsterdam &middot; May 2026</div>
+          <div class="d">+47.8% vs prior month</div>
+        </button>
+        <button class="qrow">
+          <div class="t">MediaMarkt</div>
+          <div class="m">Berliner Allee, D&uuml;sseldorf &middot; May 2026</div>
+          <div class="d">&minus;38.0% vs prior month</div>
+        </button>
+        <button class="qrow">
+          <div class="t">Decathlon</div>
+          <div class="m">Rue Royale, Brussels &middot; May 2026</div>
+          <div class="d">+61.2% vs prior month</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Object view: Causeway renders this from the Turnover entity + its accept()/correct() actions -->
+    <div class="card">
+      <div class="objhead">
+        <div>
+          <h2>Zalando &mdash; turnover for May 2026</h2>
+          <div class="ctx">Kastanjelaan, Amsterdam (Netherlands) &middot; lease since Jan 2024</div>
+        </div>
+        <span class="badge flagged">FLAGGED</span>
+      </div>
+
+      <div class="fields">
+        <div class="field"><div class="k">Reported amount</div><div class="v">&euro;266,000</div></div>
+        <div class="field"><div class="k">Previous month</div><div class="v">&euro;180,000</div></div>
+        <div class="field"><div class="k">Deviation</div><div class="v warn">+47.8%</div></div>
+        <div class="field"><div class="k">Currency</div><div class="v">EUR</div></div>
+        <div class="field"><div class="k">Submitted</div><div class="v">3 Jun 2026</div></div>
+      </div>
+
+      <div class="divide"></div>
+
+      <!-- The open ValidationIssue raised by the deviation rule -->
+      <div class="issue">
+        <span class="badge open">ISSUE OPEN</span>
+        <div class="rule">Month-over-month deviation &gt; 30%</div>
+        <div class="desc">Reported turnover changed by 47.8% versus the prior month (&euro;180,000 &rarr; &euro;266,000), above the 30% review threshold. Confirm the figure is correct, or enter the corrected amount.</div>
+      </div>
+
+      <div class="divide"></div>
+
+      <!-- Causeway generates these two buttons from the Turnover.accept() / correct() domain actions -->
+      <div class="actions">
+        <div class="grid2">
+          <div>
+            <div class="lbl">Corrected amount (EUR)</div>
+            <input id="amount" type="text" inputmode="decimal" placeholder="e.g. 186,000">
+          </div>
+          <div>
+            <div class="lbl">Reason &middot; required</div>
+            <input id="reason" type="text" placeholder="Why is this figure right / what was corrected?">
+          </div>
+        </div>
+
+        <div class="btns">
+          <button class="act primary" onclick="record('correct')">Correct figure</button>
+          <button class="act secondary" onclick="record('accept')">Accept as reported</button>
+        </div>
+
+        <div class="hint">Both actions require a reason and resolve the open issue. Causeway greys these out unless the
+          turnover is <b>FLAGGED</b> (the domain rule), and rejects a non-positive corrected amount.</div>
+
+        <!-- Illustrates what the action writes onto the ValidationIssue audit fields -->
+        <div class="recorded" id="recorded">
+          <div class="h" id="recHead"></div>
+          <div class="l">resolution: <b id="recRes"></b></div>
+          <div class="l">resolvedBy: <b>a.manager@property.example</b></div>
+          <div class="l">resolvedAt: <b id="recAt"></b></div>
+          <div class="l">status: <b id="recStatus"></b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">Illustrative mock-up of the operational review screen. Nothing here is hand-coded UI: Apache Causeway
+  generates this screen, the flagged queue, and the two buttons from the annotated <b>Turnover</b> domain object and its
+  <b>accept()</b> / <b>correct()</b> actions. The rules (only a FLAGGED turnover can be reviewed, reason required, corrected
+  amount must be positive) and the audit trail (resolution / resolvedBy / resolvedAt on the ValidationIssue) come from the
+  domain — see causeway-notes.md and validation-flow.puml. Sample data.</p>
+</div>
+
+<script>
+(function(){
+  // queue selection (cosmetic)
+  document.querySelectorAll('.qrow').forEach(function(row){
+    row.addEventListener('click', function(){
+      document.querySelectorAll('.qrow').forEach(function(r){ r.classList.remove('active'); });
+      row.classList.add('active');
+    });
+  });
+})();
+
+function record(kind){
+  var reason = document.getElementById('reason').value.trim();
+  var amount = document.getElementById('amount').value.trim();
+  if(!reason){ document.getElementById('reason').focus(); return; }
+  if(kind === 'correct' && !amount){ document.getElementById('amount').focus(); return; }
+
+  var head = document.getElementById('recHead');
+  var res  = document.getElementById('recRes');
+  var status = document.getElementById('recStatus');
+  if(kind === 'correct'){
+    head.textContent = 'Turnover corrected — issue resolved';
+    res.textContent = 'Corrected to €' + amount + '. ' + reason;
+    status.textContent = 'CORRECTED  ·  ValidationIssue RESOLVED';
+  } else {
+    head.textContent = 'Turnover accepted as reported — issue resolved';
+    res.textContent = reason;
+    status.textContent = 'ACCEPTED  ·  ValidationIssue RESOLVED';
+  }
+  document.getElementById('recAt').textContent = new Date().toISOString().replace('T',' ').slice(0,16) + ' UTC';
+  document.getElementById('recorded').style.display = 'block';
+}
+</script>
+</body>
+</html>

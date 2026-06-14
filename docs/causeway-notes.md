@@ -58,6 +58,29 @@ Business rules live in the action, e.g.:
 - correcting requires a reason,
 - corrected amount must be positive.
 
+## Where a hand-written REST controller still fits
+
+If Causeway generates both the UI and a REST API, why does this repo also contain
+a `TurnoverImportController`?
+
+- **The review workflow is pure Causeway.** Listing flagged turnovers and the
+  `accept` / `correct` actions are operations on the `Turnover` domain object, so
+  they are business action methods (above) — Causeway renders the buttons and
+  exposes the REST endpoints. Hand-writing a review controller would duplicate
+  that, so this repo deliberately does **not** have one.
+- **The import trigger is a different animal.** It is a batch/integration action
+  (fetch from the Tenant App, page through results, persist an `ImportRun`), not
+  an operation on a single domain object a user is looking at. Its callers are
+  non-human: the daily scheduler, ops re-running a failed day, a monitoring
+  system. A thin, framework-neutral REST endpoint is the natural manual
+  counterpart to the `@Scheduled` run, and it makes the inbound adapter of the
+  hexagonal design explicit rather than hidden behind framework magic.
+
+So in a real Causeway deployment the inbound side is: **Causeway** for the
+human-facing review workflow, plus a small **REST controller** for system-to-system
+triggering of the import. The controller depends only on the `TurnoverImportUseCase`
+port, so it stays a thin adapter regardless of which UI framework sits beside it.
+
 ## Audit trail (why reports become trustworthy)
 
 The old process produced untrusted reports. Each correction records the original
