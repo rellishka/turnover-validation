@@ -1,0 +1,80 @@
+@startuml data-model
+title Persistence / data model (adapter.out tables — basis for the analytics views)
+!pragma layout smetana
+skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 80
+skinparam ranksep 70
+
+entity Property {
+  * id
+  --
+  * externalId <<unique>>
+  name
+  country
+  city
+}
+
+entity Tenant {
+  * id
+  --
+  * externalId <<unique>>
+  name
+}
+
+entity Lease {
+  * id
+  --
+  * propertyId <<FK>>
+  * tenantId <<FK>>
+  startDate
+  endDate
+}
+
+entity Turnover {
+  * id
+  --
+  * leaseId <<FK>>
+  * importRunId <<FK>>
+  * period (year-month)
+  amount
+  currency
+  status
+  submittedAt
+}
+
+entity ValidationIssue {
+  * id
+  --
+  * turnoverId <<FK>>
+  rule
+  description
+  status (OPEN / RESOLVED)
+  resolution
+  resolvedBy
+  resolvedAt
+}
+
+entity ImportRun {
+  * id
+  --
+  startedAt
+  finishedAt
+  status (SUCCESS / FAILED)
+  periodFetched
+  entriesImported
+  errorMessage
+}
+
+Property ||--o{ Lease
+Tenant ||--o{ Lease
+Lease ||--o{ Turnover
+Turnover ||--o{ ValidationIssue
+ImportRun ||--o{ Turnover
+
+note bottom of Turnover
+  status: RECEIVED → FLAGGED →
+  ACCEPTED / CORRECTED
+end note
+
+@enduml

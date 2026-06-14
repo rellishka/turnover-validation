@@ -1,79 +1,84 @@
 @startuml domain-model
+title Domain model
 !pragma layout smetana
 skinparam shadowing false
 skinparam linetype ortho
 skinparam nodesep 80
 skinparam ranksep 70
 
-entity Property {
-  * id
-  --
-  * externalId <<unique>>
-  name
-  country
-  city
+class Property {
+  externalId: String
+  name: String
+  country: String
+  city: String
 }
 
-entity Tenant {
-  * id
-  --
-  * externalId <<unique>>
-  name
+class Tenant {
+  externalId: String
+  name: String
 }
 
-entity Lease {
-  * id
-  --
-  * propertyId <<FK>>
-  * tenantId <<FK>>
-  startDate
-  endDate
+class Lease {
+  id: Long
+  property: Property
+  tenant: Tenant
+  startDate: LocalDate
+  endDate: LocalDate
 }
 
-entity Turnover {
-  * id
+class Turnover {
+  id: Long
+  lease: Lease
+  importRun: ImportRun
+  period: YearMonth
+  amount: BigDecimal
+  currency: String
+  status: TurnoverStatus
+  submittedAt: Instant
   --
-  * leaseId <<FK>>
-  * importRunId <<FK>>
-  * period (year-month)
-  amount
-  currency
-  status
-  submittedAt
+  +flag(): Turnover
+  +accept(): Turnover
+  +correct(newAmount): Turnover
 }
 
-entity ValidationIssue {
-  * id
+class ValidationIssue {
+  id: Long
+  turnover: Turnover
+  rule: ValidationRule
+  description: String
+  status: ValidationIssueStatus
+  resolution: String
+  resolvedBy: String
+  resolvedAt: Instant
   --
-  * turnoverId <<FK>>
-  rule
-  description
-  status (OPEN / RESOLVED)
-  resolution
-  resolvedBy
-  resolvedAt
+  +resolve(resolution, resolvedBy, when): ValidationIssue
 }
 
-entity ImportRun {
-  * id
+class ImportRun {
+  id: Long
+  startedAt: Instant
+  finishedAt: Instant
+  status: ImportRunStatus
+  periodFetched: YearMonth
+  entriesImported: int
+  errorMessage: String
   --
-  startedAt
-  finishedAt
-  status (SUCCESS / FAILED)
-  periodFetched
-  entriesImported
-  errorMessage
+  +succeeded(count): ImportRun
+  +failed(message): ImportRun
+}
+
+class TurnoverManager {
+  +classify(): Turnover
+  +raiseDeviationIssue(): ValidationIssue
+  +correct(): Validation<Turnover>
+  +accept(): Validation<Turnover>
 }
 
 Property ||--o{ Lease
 Tenant ||--o{ Lease
 Lease ||--o{ Turnover
-Turnover ||--o{ ValidationIssue
 ImportRun ||--o{ Turnover
-
-note bottom of Turnover
-  status: RECEIVED → FLAGGED →
-  ACCEPTED / CORRECTED
-end note
+Turnover ||--o{ ValidationIssue
+TurnoverManager ..> Turnover
 
 @enduml
