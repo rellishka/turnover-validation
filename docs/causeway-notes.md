@@ -1,8 +1,7 @@
 # Apache Causeway — implementation notes
 
 The company uses Apache Causeway, which generates a UI (and optionally a REST
-API) from annotated Java domain objects. This shapes how the operational app is
-built and is why the assignment says "you don't need to focus on the UI."
+API) from annotated Java domain objects.
 
 ## What Causeway gives you automatically
 
