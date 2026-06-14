@@ -1,0 +1,33 @@
+@startuml validation-flow
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+|System|
+start
+:Trigger import\n(monthly schedule or manual);
+:Create ImportRun,\nfetch data from Tenant App (REST);
+if (Fetch successful?) then (yes)
+  :ImportRun → SUCCESS\nTurnover records created (RECEIVED);
+  :Run validation rules\n(deviation vs previous periods);
+  if (Deviation found?) then (yes)
+    :ValidationIssue created (OPEN)\nTurnover → FLAGGED;
+    |Asset Manager|
+    :Review flagged turnover,\ncontact tenant;
+    if (Figure is correct?) then (yes)
+      :Turnover → ACCEPTED;
+    else (no)
+      :Correct amount\nTurnover → CORRECTED;
+    endif
+    :ValidationIssue → RESOLVED;
+    |System|
+  else (no)
+    :Turnover → ACCEPTED;
+  endif
+  :Validated data visible\nin analytics views;
+  stop
+else (no)
+  :ImportRun → FAILED\n(error stored, re-trigger possible);
+  stop
+endif
+
+@enduml

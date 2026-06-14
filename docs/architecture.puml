@@ -1,0 +1,37 @@
+@startuml high-level-architecture
+!pragma layout smetana
+skinparam shadowing false
+skinparam rectangleRoundCorner 12
+skinparam defaultTextAlignment center
+skinparam wrapWidth 220
+skinparam nodesep 60
+skinparam ranksep 80
+skinparam padding 5
+
+actor "Tenant\nrepresentative" as tenantRep
+actor "Asset Manager" as assetManager
+actor "Data analyst" as analyst
+actor "Board of\nManagement" as board
+
+rectangle "Tenant App\n(external system, REST API)" as tenantApp #LightGray
+
+rectangle "Turnover Validation Application\n" as tv {
+    rectangle "Ingestion module" as ingestion #D5E8F0
+    rectangle "Validation module\nFlags deviations, review workflow" as validation #D5E8F0
+    database "Database" as db #FDF6E3
+    rectangle "Analytics\nVersioned SQL views" as contract #DFF0D8
+}
+
+rectangle "Power BI" as powerBI #LightGray
+
+tenantRep --> tenantApp
+ingestion --> tenantApp
+ingestion --> db
+validation --> db
+assetManager --> validation
+contract --> db
+powerBI --> contract
+analyst --> powerBI
+board --> powerBI
+
+@enduml

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turnover dashboard — Power BI mockup</title>
+<style>
+  :root{
+    --bg:#f7f7f5; --surface:#ffffff; --surface2:#f1efe8;
+    --text:#2c2c2a; --muted:#5f5e5a; --border:rgba(0,0,0,0.12);
+    --radius:12px; --radius-sm:8px;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; padding:32px; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap{ max-width:1000px; margin:0 auto; }
+  h1{ font-size:22px; font-weight:500; margin:0 0 2px; }
+  .sub{ font-size:13px; color:var(--muted); margin:0; }
+  .head{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px; }
+  select{ height:34px; padding:0 10px; border:0.5px solid var(--border); border-radius:var(--radius-sm);
+    background:var(--surface); color:var(--text); font-size:13px; }
+  .slicers{ display:flex; gap:8px; flex-wrap:wrap; }
+  .kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:20px; }
+  .kpi{ background:var(--surface2); border-radius:var(--radius-sm); padding:16px; }
+  .kpi .label{ font-size:13px; color:var(--muted); }
+  .kpi .value{ font-size:24px; font-weight:500; margin-top:4px; }
+  .card{ background:var(--surface); border:0.5px solid var(--border); border-radius:var(--radius); padding:16px 20px; }
+  .card .title{ font-size:14px; font-weight:500; margin-bottom:10px; }
+  .row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
+  .mb{ margin-bottom:16px; }
+  .note{ font-size:12px; color:var(--muted); margin-top:20px; }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#1a1a18; --surface:#242422; --surface2:#2c2c2a; --text:#ebebe8; --muted:#a8a8a2; --border:rgba(255,255,255,0.12); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <h1>Turnover performance</h1>
+      <p class="sub">Trailing 12 months · by property and tenant</p>
+    </div>
+    <div class="slicers">
+      <select aria-label="Year"><option>Jul 2025 – Jun 2026</option><option>2025</option></select>
+      <select aria-label="Country"><option>All countries</option><option>Netherlands</option><option>Belgium</option><option>Germany</option></select>
+      <select aria-label="Currency"><option>EUR</option><option>GBP</option></select>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="label">Total turnover (12M)</div><div class="value">&euro;48.2M</div></div>
+    <div class="kpi"><div class="label">Properties</div><div class="value">23</div></div>
+    <div class="kpi"><div class="label">Reporting tenants</div><div class="value">142</div></div>
+    <div class="kpi"><div class="label">Validated</div><div class="value">100%</div></div>
+  </div>
+
+  <div class="card mb">
+    <div class="title">Monthly turnover &mdash; top properties</div>
+    <div style="height:220px;"><canvas id="trend"></canvas></div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <div class="title">Turnover by property (12M)</div>
+      <div style="height:220px;"><canvas id="byProperty"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="title">Top tenants by turnover (12M)</div>
+      <div style="height:220px;"><canvas id="byTenant"></canvas></div>
+    </div>
+  </div>
+
+  <p class="note">Illustrative mock-up. Built on the analytics views (see analytics-contract.md). Numbers are sample data.
+  The currency slicer reflects the no-conversion assumption — figures are viewed one currency at a time.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function(){
+  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var grid = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+  var tick = dark ? 'rgba(235,235,235,0.7)' : 'rgba(40,40,40,0.65)';
+  var blue = '#378ADD', teal = '#1D9E75', amber = '#EF9F27';
+  Chart.defaults.color = tick;
+  var months = ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
+  var eur = function(v){ return '€' + v.toLocaleString(); };
+
+  new Chart(document.getElementById('trend'), {
+    type:'line',
+    data:{ labels:months, datasets:[
+      { label:'Kastanjelaan, Amsterdam', data:[210,205,220,232,228,240,235,244,250,248,260,266], borderColor:blue, backgroundColor:blue, tension:0.35, borderWidth:2, pointRadius:0 },
+      { label:'Rue Royale, Brussels', data:[180,176,182,190,188,195,191,198,202,205,210,214], borderColor:teal, backgroundColor:teal, tension:0.35, borderWidth:2, pointRadius:0 },
+      { label:'Berliner Allee, Düsseldorf', data:[150,158,149,162,170,166,172,168,176,180,184,189], borderColor:amber, backgroundColor:amber, tension:0.35, borderWidth:2, pointRadius:0 }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, boxHeight:10, usePointStyle:true, padding:14, font:{size:11} } },
+        tooltip:{ callbacks:{ label:function(c){ return c.dataset.label+': '+eur(c.parsed.y*1000); } } } },
+      scales:{ x:{ grid:{ color:grid }, ticks:{ font:{size:11} } },
+        y:{ grid:{ color:grid }, ticks:{ font:{size:11}, callback:function(v){ return '€'+v+'k'; } } } } }
+  });
+
+  new Chart(document.getElementById('byProperty'), {
+    type:'bar',
+    data:{ labels:['Amsterdam','Brussels','Düsseldorf','Rotterdam','Antwerp','Cologne'],
+      datasets:[{ data:[2.95,2.33,2.02,1.74,1.41,1.18], backgroundColor:blue, borderRadius:4, barThickness:16 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:function(c){ return eur(c.parsed.x)+'M'; } } } },
+      scales:{ x:{ grid:{ color:grid }, ticks:{ font:{size:11}, callback:function(v){ return '€'+v+'M'; } } },
+        y:{ grid:{ display:false }, ticks:{ font:{size:11} } } } }
+  });
+
+  new Chart(document.getElementById('byTenant'), {
+    type:'bar',
+    data:{ labels:['Zalando','MediaMarkt','Decathlon','H&M','Albert Heijn','Delhaize'],
+      datasets:[{ data:[1.62,1.38,1.15,0.94,0.81,0.66], backgroundColor:teal, borderRadius:4, barThickness:16 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:function(c){ return eur(c.parsed.x)+'M'; } } } },
+      scales:{ x:{ grid:{ color:grid }, ticks:{ font:{size:11}, callback:function(v){ return '€'+v+'M'; } } },
+        y:{ grid:{ display:false }, ticks:{ font:{size:11} } } } }
+  });
+})();
+</script>
+</body>
+</html>
