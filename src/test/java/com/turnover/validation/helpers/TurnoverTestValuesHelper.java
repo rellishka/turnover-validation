@@ -1,6 +1,7 @@
 package com.turnover.validation.helpers;
 
 import com.turnover.validation.application.domain.ImportRun;
+import com.turnover.validation.application.domain.ImportRunStatus;
 import com.turnover.validation.application.domain.Lease;
 import com.turnover.validation.application.domain.Property;
 import com.turnover.validation.application.domain.Tenant;
@@ -28,6 +29,8 @@ public final class TurnoverTestValuesHelper {
     public static final String TENANT_EXTERNAL_ID = "T-1042";
     public static final String PROPERTY_EXTERNAL_ID = "P-007";
     public static final Long TURNOVER_ID = 1L;
+    public static final Long IMPORT_RUN_ID = 1L;
+    public static final int ENTRIES_IMPORTED = 42;
 
     public static Property property() {
         return new Property(1L, PROPERTY_EXTERNAL_ID, "Kastanjelaan", "Netherlands", "Amsterdam");
@@ -43,6 +46,11 @@ public final class TurnoverTestValuesHelper {
 
     public static ImportRun importRun() {
         return new ImportRun(PERIOD);
+    }
+
+    public static ImportRun succeededImportRun() {
+        return new ImportRun(
+                IMPORT_RUN_ID, SUBMITTED_AT, SUBMITTED_AT, ImportRunStatus.SUCCESS, PERIOD, ENTRIES_IMPORTED, null);
     }
 
     public static Turnover turnover(TurnoverStatus status) {
