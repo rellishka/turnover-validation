@@ -4,11 +4,11 @@ skinparam defaultTextAlignment center
 
 |System|
 start
-:Trigger import\n(monthly schedule or manual);
+:Trigger import\n(daily schedule in a collection period of the month or manual);
 :Create ImportRun,\nfetch data from Tenant App (REST);
 if (Fetch successful?) then (yes)
-  :ImportRun → SUCCESS\nTurnover records created (RECEIVED);
-  :Run validation rules\n(deviation vs previous periods);
+  :Map submissions to Turnover;
+  :Run validation rules\n(deviation vs previous month);
   if (Deviation found?) then (yes)
     :ValidationIssue created (OPEN)\nTurnover → FLAGGED;
     |Asset Manager|
@@ -23,6 +23,7 @@ if (Fetch successful?) then (yes)
   else (no)
     :Turnover → ACCEPTED;
   endif
+  :ImportRun → SUCCESS;
   :Validated data visible\nin analytics views;
   stop
 else (no)
