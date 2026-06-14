@@ -12,4 +12,11 @@ public record ValidationIssue(
         String resolvedBy,
         Instant resolvedAt
 ) {
+
+    /** This issue was resolved by an Asset Manager. */
+    public ValidationIssue resolve(String resolution, String resolvedBy, Instant when) {
+        return new ValidationIssue(
+                id, turnover, rule, description,
+                ValidationIssueStatus.RESOLVED, resolution, resolvedBy, when);
+    }
 }

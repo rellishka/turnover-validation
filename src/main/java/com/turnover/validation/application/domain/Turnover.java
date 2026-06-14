@@ -26,4 +26,23 @@ public record Turnover(
                 && Objects.nonNull(currency)
                 && !currency.isBlank();
     }
+
+    /** Significant deviation detected — needs Asset Manager review. */
+    public Turnover flag() {
+        return withStatus(TurnoverStatus.FLAGGED);
+    }
+
+    /** Confirmed correct as reported. */
+    public Turnover accept() {
+        return withStatus(TurnoverStatus.ACCEPTED);
+    }
+
+    /** Corrected to the agreed figure after contacting the tenant. */
+    public Turnover correct(BigDecimal correctedAmount) {
+        return new Turnover(id, lease, importRun, period, correctedAmount, currency, TurnoverStatus.CORRECTED, submittedAt);
+    }
+
+    private Turnover withStatus(TurnoverStatus newStatus) {
+        return new Turnover(id, lease, importRun, period, amount, currency, newStatus, submittedAt);
+    }
 }

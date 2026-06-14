@@ -9,11 +9,17 @@ import lombok.ToString;
 import java.util.Optional;
 
 /**
- * This class represents a validation that either has an object or an error.
- * In the case it has an object it means the validation was successful.
- * In case it has an error it means the validation failed.
+ * A generic success-or-error result wrapper used at the manager/service boundary:
+ * it holds either the resulting object (success) or a message plus a
+ * {@link ValidationErrorCode} (failure), which the application service maps to an
+ * exception. Think of it as {@code Result<T>} / {@code Either}.
  *
- * @param <T> the validated object type
+ * <p><strong>Note: this is NOT the domain validation.</strong> Domain
+ * well-formedness lives in {@link Validatable#isValid()} on the domain records
+ * (e.g. {@link Turnover}). {@code Validation} only carries the <em>outcome</em> of
+ * an operation, not the rules themselves.
+ *
+ * @param <T> the type of the result object on success
  */
 @Getter
 @ToString

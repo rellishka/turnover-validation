@@ -2,5 +2,6 @@ package com.turnover.validation.application.domain;
 
 public enum ValidationErrorCode {
     GENERIC,
-    INVALID_TURNOVER
+    INVALID_TURNOVER,
+    TURNOVER_NOT_FLAGGED
 }
