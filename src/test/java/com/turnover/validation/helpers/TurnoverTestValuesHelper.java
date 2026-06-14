@@ -33,11 +33,11 @@ public final class TurnoverTestValuesHelper {
     public static final int ENTRIES_IMPORTED = 42;
 
     public static Property property() {
-        return new Property(1L, PROPERTY_EXTERNAL_ID, "Kastanjelaan", "Netherlands", "Amsterdam");
+        return new Property(PROPERTY_EXTERNAL_ID, "Kastanjelaan", "Netherlands", "Amsterdam");
     }
 
     public static Tenant tenant() {
-        return new Tenant(1L, TENANT_EXTERNAL_ID, "Zalando");
+        return new Tenant(TENANT_EXTERNAL_ID, "Zalando");
     }
 
     public static Lease lease() {

@@ -18,10 +18,10 @@ public class LeasePersistenceMapper {
     }
 
     private Property toDomain(PropertyEntity entity) {
-        return new Property(entity.getId(), entity.getExternalId(), entity.getName(), entity.getCountry(), entity.getCity());
+        return new Property(entity.getExternalId(), entity.getName(), entity.getCountry(), entity.getCity());
     }
 
     private Tenant toDomain(TenantEntity entity) {
-        return new Tenant(entity.getId(), entity.getExternalId(), entity.getName());
+        return new Tenant(entity.getExternalId(), entity.getName());
     }
 }
