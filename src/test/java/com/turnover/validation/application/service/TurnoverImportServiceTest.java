@@ -13,6 +13,7 @@ import com.turnover.validation.application.domain.TurnoverStatus;
 import com.turnover.validation.application.domain.ValidationIssue;
 import com.turnover.validation.application.domain.ValidationIssueRepository;
 import com.turnover.validation.application.domain.ValidationIssueStatus;
+import com.turnover.validation.application.domain.ValidationRule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -88,7 +89,7 @@ class TurnoverImportServiceTest {
         when(turnoverManager.classify(any(Turnover.class), eq(previous))).thenReturn(flagged);
         when(turnoverRepository.save(flagged)).thenReturn(flagged);
         ValidationIssue issue = new ValidationIssue(
-                null, flagged, "rule", "desc", ValidationIssueStatus.OPEN, null, null, null);
+                null, flagged, ValidationRule.MONTH_OVER_MONTH_DEVIATION, "desc", ValidationIssueStatus.OPEN, null, null, null);
         when(turnoverManager.raiseDeviationIssue(flagged, previous)).thenReturn(issue);
 
         ImportRun result = service.importTurnoverForPeriod(PERIOD);

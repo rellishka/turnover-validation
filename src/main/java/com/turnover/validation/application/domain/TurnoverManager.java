@@ -15,7 +15,6 @@ public class TurnoverManager {
 
     /** Flag a turnover when it deviates from the previous month by more than this fraction. */
     public static final BigDecimal DEVIATION_THRESHOLD = new BigDecimal("0.30");
-    public static final String DEVIATION_RULE = "MONTH_OVER_MONTH_DEVIATION";
     public static final String ONLY_FLAGGED_CAN_BE_REVIEWED =
             "Only a flagged turnover can be corrected or accepted";
     private static final String DEVIATION_DESCRIPTION =
@@ -61,7 +60,7 @@ public class TurnoverManager {
         String description = String.format(DEVIATION_DESCRIPTION,
                 flagged.amount().toPlainString(), flagged.period(), previousAmount, DEVIATION_THRESHOLD);
         return new ValidationIssue(
-                null, flagged, DEVIATION_RULE, description,
+                null, flagged, ValidationRule.MONTH_OVER_MONTH_DEVIATION, description,
                 ValidationIssueStatus.OPEN, null, null, null);
     }
 

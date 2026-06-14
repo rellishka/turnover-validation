@@ -4,6 +4,7 @@ import com.turnover.validation.application.domain.Turnover;
 import com.turnover.validation.application.domain.TurnoverStatus;
 import com.turnover.validation.application.domain.ValidationIssue;
 import com.turnover.validation.application.domain.ValidationIssueStatus;
+import com.turnover.validation.application.domain.ValidationRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ class ValidationIssuePersistenceAdapterTest {
     void savePersistsIssueAndFindOpenReturnsIt() {
         Turnover turnoverRef = turnoverRef();
         ValidationIssue issue = new ValidationIssue(
-                null, turnoverRef, "MONTH_OVER_MONTH_DEVIATION", "deviation",
+                null, turnoverRef, ValidationRule.MONTH_OVER_MONTH_DEVIATION, "deviation",
                 ValidationIssueStatus.OPEN, null, null, null);
 
         ValidationIssue saved = adapter.save(issue);

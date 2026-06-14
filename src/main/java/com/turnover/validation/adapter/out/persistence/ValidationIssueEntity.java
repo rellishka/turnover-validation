@@ -1,6 +1,7 @@
 package com.turnover.validation.adapter.out.persistence;
 
 import com.turnover.validation.application.domain.ValidationIssueStatus;
+import com.turnover.validation.application.domain.ValidationRule;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,7 +32,8 @@ public class ValidationIssueEntity {
     @ManyToOne(optional = false)
     private TurnoverEntity turnover;
 
-    private String rule;
+    @Enumerated(EnumType.STRING)
+    private ValidationRule rule;
 
     @Column(length = 1000)
     private String description;

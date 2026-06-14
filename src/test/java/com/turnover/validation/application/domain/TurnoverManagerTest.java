@@ -103,7 +103,7 @@ class TurnoverManagerTest {
         ValidationIssue issue = manager.raiseDeviationIssue(flagged, previous);
 
         assertEquals(ValidationIssueStatus.OPEN, issue.status());
-        assertEquals(TurnoverManager.DEVIATION_RULE, issue.rule());
+        assertEquals(ValidationRule.MONTH_OVER_MONTH_DEVIATION, issue.rule());
         assertSame(flagged, issue.turnover());
         assertNotNull(issue.description());
     }

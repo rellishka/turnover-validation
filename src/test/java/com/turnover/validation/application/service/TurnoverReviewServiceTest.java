@@ -9,6 +9,7 @@ import com.turnover.validation.application.domain.ValidationErrorCode;
 import com.turnover.validation.application.domain.ValidationIssue;
 import com.turnover.validation.application.domain.ValidationIssueRepository;
 import com.turnover.validation.application.domain.ValidationIssueStatus;
+import com.turnover.validation.application.domain.ValidationRule;
 import com.turnover.validation.exception.InvalidTurnoverException;
 import com.turnover.validation.exception.TurnoverNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -107,6 +108,6 @@ class TurnoverReviewServiceTest {
 
     private ValidationIssue openIssueFor(Turnover turnover) {
         return new ValidationIssue(
-                1L, turnover, "rule", "description", ValidationIssueStatus.OPEN, null, null, null);
+                1L, turnover, ValidationRule.MONTH_OVER_MONTH_DEVIATION, "description", ValidationIssueStatus.OPEN, null, null, null);
     }
 }
