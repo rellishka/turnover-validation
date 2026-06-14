@@ -21,6 +21,9 @@ The focus is not CRUD completeness, but showing where each concern belongs.
 
 ## Architecture
 
+The app follows **ports and adapters** (hexagonal architecture) — see
+[Hexagonal architecture: there are always two sides to every story](https://medium.com/ssense-tech/hexagonal-architecture-there-are-always-two-sides-to-every-story-bc0780ed7d9c).
+
 - `adapter.in`
   - inbound HTTP adapter (controllers, request/response DTOs, mappers, exception handlers)
 - `application`
