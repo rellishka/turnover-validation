@@ -51,6 +51,13 @@ The view is an abstraction layer between the operational schema and consumers.
 
 Views are versioned as migrations; a contract test guards the output columns.
 
+This repo implements the view in [`schema.sql`](../src/main/resources/schema.sql)
+(applied to H2 after Hibernate creates the operational tables) to demonstrate it
+runs against the real generated schema; in production these would be
+Flyway/Liquibase migrations. `MonthlyTurnoverViewContractTest` is the contract
+test — it selects each output column by name (failing if one drifts) and asserts
+only ACCEPTED / CORRECTED rows leave the view.
+
 ## Assumptions
 
 - Multi-currency: view exposes `amount` + `currency`, no conversion. The app
