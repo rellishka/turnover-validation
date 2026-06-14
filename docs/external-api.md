@@ -55,6 +55,31 @@ against `Tenant.externalId` and `Property.externalId` in our domain model.
 - Re-running an import for the same period updates existing `Turnover` rows
   (matched by lease + period) instead of duplicating them.
 
+## Scheduling and recovery
+
+The import runs **daily during the monthly collection window** (the days each month
+when tenants submit), not as a single monthly shot. Because the import is idempotent
+(one turnover per lease per period; existing rows are skipped), running it repeatedly
+is cheap and safe — each run only picks up what is new. This cadence gives two things
+for free:
+
+- **Late submissions** are picked up day by day across the window.
+- **Failure recovery**: a run that fails (after in-call retries are exhausted and the
+  `ImportRun` is marked `FAILED`) is simply re-attempted by the next day's run.
+
+Layered recovery, fastest to slowest:
+
+| Layer | Handles | Timescale |
+|-------|---------|-----------|
+| In-call retries (backoff, transient only) | brief 5xx / timeouts | seconds |
+| Next daily run (idempotent) | a failed day, late submissions | next day |
+| Bounded same-day re-attempt (optional) | faster recovery near a deadline | hours |
+| Manual re-trigger | persistent failures after a fix | on demand |
+
+Only **transient** failures (5xx, timeouts) are worth re-attempting. **Persistent**
+ones (bad credentials, changed contract, 4xx) will fail identically on every retry —
+these should alert a human rather than loop on a schedule.
+
 ## Assumptions
 
 - Amounts are reported with an explicit currency; no conversion is done by the
