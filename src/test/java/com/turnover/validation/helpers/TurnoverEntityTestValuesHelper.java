@@ -1,10 +1,10 @@
 package com.turnover.validation.helpers;
 
-import com.turnover.validation.adapter.out.ImportRunEntity;
-import com.turnover.validation.adapter.out.LeaseEntity;
-import com.turnover.validation.adapter.out.PropertyEntity;
-import com.turnover.validation.adapter.out.TenantEntity;
-import com.turnover.validation.adapter.out.TurnoverEntity;
+import com.turnover.validation.adapter.out.persistence.ImportRunEntity;
+import com.turnover.validation.adapter.out.persistence.LeaseEntity;
+import com.turnover.validation.adapter.out.persistence.PropertyEntity;
+import com.turnover.validation.adapter.out.persistence.TenantEntity;
+import com.turnover.validation.adapter.out.persistence.TurnoverEntity;
 import com.turnover.validation.application.domain.ImportRunStatus;
 import com.turnover.validation.application.domain.TurnoverStatus;
 

@@ -1,4 +1,4 @@
-package com.turnover.validation.adapter.out;
+package com.turnover.validation.adapter.out.persistence;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

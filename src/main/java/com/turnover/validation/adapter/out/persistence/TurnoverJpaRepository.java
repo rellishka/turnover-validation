@@ -1,4 +1,4 @@
-package com.turnover.validation.adapter.out;
+package com.turnover.validation.adapter.out.persistence;
 
 import com.turnover.validation.application.domain.TurnoverStatus;
 import org.springframework.data.jpa.repository.JpaRepository;

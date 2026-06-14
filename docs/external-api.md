@@ -6,8 +6,7 @@ specified in the assignment, so the contract below is an explicit assumption.
 ## Authentication
 
 API key issued by the Tenant App administrator, sent as a bearer token.
-The key is kept in secret storage (environment variable / vault), never in
-code or the database.
+The key is kept in secret storage (environment variable / vault).
 
 ```
 Authorization: Bearer <api-key>

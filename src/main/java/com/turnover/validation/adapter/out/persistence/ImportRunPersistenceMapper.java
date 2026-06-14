@@ -1,4 +1,4 @@
-package com.turnover.validation.adapter.out;
+package com.turnover.validation.adapter.out.persistence;
 
 import com.turnover.validation.application.domain.ImportRun;
 import org.springframework.stereotype.Component;

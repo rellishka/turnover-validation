@@ -1,4 +1,4 @@
-package com.turnover.validation.adapter.out;
+package com.turnover.validation.adapter.out.persistence;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "property")
+@Table(name = "tenant")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PropertyEntity {
+public class TenantEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +26,4 @@ public class PropertyEntity {
     private String externalId;
 
     private String name;
-    private String country;
-    private String city;
 }
